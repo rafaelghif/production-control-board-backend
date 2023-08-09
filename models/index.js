@@ -18,7 +18,7 @@ const models = {}
 
 connectionDatabase.sync();
 
-connectionDatabase.query(`CREATE OR REPLACE VIEW v_controlboardplannings AS SELECT p.LineId, p.date as planningDate, HOUR(pd.time) AS planningTime, pd.sequence, pd.qty FROM controlboardplannings AS p JOIN controlboardplanningdetails AS pd ON p.id = pd.ControlBoardPlanningId WHERE p.inActive = 0 AND pd.inActive = 0 ORDER BY p.date, pd.sequence ASC`, { type: QueryTypes.RAW });
+connectionDatabase.query(`CREATE OR REPLACE VIEW v_controlboardplannings AS SELECT p.LineId, p.date as planningDate, HOUR(pd.time) AS planningTime, pd.sequence, pd.qty,pd.remark FROM controlboardplannings AS p JOIN controlboardplanningdetails AS pd ON p.id = pd.ControlBoardPlanningId WHERE p.inActive = 0 AND pd.inActive = 0 ORDER BY p.date, pd.sequence ASC`, { type: QueryTypes.RAW });
 connectionDatabase.query(`CREATE OR REPLACE VIEW v_ordercompletes AS SELECT LineId, CAST(createdAt AS DATE) AS createdDate, HOUR(createdAt) AS createdTime, COUNT(*) AS total FROM ordercompletes AS oc GROUP BY LineId, CAST(createdAt AS DATE), HOUR(createdAt)`, { type: QueryTypes.RAW });
 
 models.User = User;
