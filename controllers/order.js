@@ -64,7 +64,7 @@ export const getOrders = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -125,7 +125,7 @@ export const createOrder = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",

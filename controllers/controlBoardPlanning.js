@@ -64,7 +64,7 @@ export const getControlBoardPlanning = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -102,7 +102,7 @@ export const getControlBoardPlanningDetail = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -150,6 +150,16 @@ export const createControlBoardPlanning = async (req, res) => {
 
         const controlBoardPlanning = await models.ControlBoardPlanning.create({
             date: planning.date,
+            actualWorkingTimeAll: planning.actualWorkingTimeAll,
+            productLoadingPlanQty: planning.productLoadingPlanQty,
+            productLoadingPlanBacklogQty: planning.productLoadingPlanBacklogQty,
+            tackTime: planning.tackTime,
+            totalProcessTime: planning.totalProcessTime,
+            actualWorkingTime: planning.actualWorkingTime,
+            actualWorkingTimeOvertime: planning.actualWorkingTimeOvertime,
+            manPowerCount: planning.manPowerCount,
+            manPowerAdditionalCount: planning.manPowerAdditionalCount,
+            manPowerAbleToSpare: planning.manPowerAbleToSpare,
             createdBy: badgeId,
             updatedBy: badgeId,
             LineId: planning.LineId
@@ -176,7 +186,7 @@ export const createControlBoardPlanning = async (req, res) => {
     } catch (err) {
         transaction.rollback();
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -200,17 +210,32 @@ export const updateControlBoardPlanning = async (req, res) => {
             });
         }
 
-        const { id, date, LineId } = req.body;
+        const {
+            id,
+            date,
+            actualWorkingTimeAll,
+            productLoadingPlanQty,
+            productLoadingPlanBacklogQty,
+            tackTime,
+            totalProcessTime,
+            actualWorkingTime,
+            actualWorkingTimeOvertime,
+            manPowerCount,
+            manPowerAdditionalCount,
+            manPowerAbleToSpare,
+            LineId
+        } = req.body;
+
         const { badgeId } = req.decoded;
 
-        const checkPlanning = await models.ControlBoardPlanning.findOne({
+        const checkPlanning = await models.ControlBoardPlanning.count({
             where: {
                 date: date,
                 LineId: LineId
             }
         });
 
-        if (checkPlanning) {
+        if (checkPlanning > 1) {
             return res.status(400).json({
                 isExpressValidation: false,
                 data: {
@@ -222,7 +247,17 @@ export const updateControlBoardPlanning = async (req, res) => {
         }
 
         const response = await models.ControlBoardPlanning.update({
-            date: date,
+            date,
+            actualWorkingTimeAll,
+            productLoadingPlanQty,
+            productLoadingPlanBacklogQty,
+            tackTime,
+            totalProcessTime,
+            actualWorkingTime,
+            actualWorkingTimeOvertime,
+            manPowerCount,
+            manPowerAdditionalCount,
+            manPowerAbleToSpare,
             updatedBy: badgeId
         }, { where: { id } });
 
@@ -233,7 +268,7 @@ export const updateControlBoardPlanning = async (req, res) => {
 
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -257,11 +292,12 @@ export const updateControlBoardPlanningDetail = async (req, res) => {
             });
         }
 
-        const { id, qty } = req.body;
+        const { id, qty, remark } = req.body;
         const { badgeId } = req.decoded;
 
         const response = await models.ControlBoardPlanningDetail.update({
             qty,
+            remark,
             updatedBy: badgeId
         }, { where: { id } });
 
@@ -272,7 +308,7 @@ export const updateControlBoardPlanningDetail = async (req, res) => {
 
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",

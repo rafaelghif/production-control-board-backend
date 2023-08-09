@@ -2,7 +2,7 @@ import { validationResult } from "express-validator";
 import models from "../models/index.js";
 import { errorLogging } from "../helpers/error.js";
 import connectionDatabase from "../configs/database.js";
-import { QueryTypes } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { addDay } from "../libs/date-fns.js";
 
 const getQueryControlBoard = (lineId, date) => {
@@ -104,9 +104,17 @@ export const getControlBoards = async (req, res) => {
 
             const lineName = line.name;
             const response = await connectionDatabase.query(getQueryControlBoard(lineId, date), { type: QueryTypes.SELECT, logging: false });
+
+            const responseSetting = await models.ControlBoardPlanning.findOne({
+                where: {
+                    LineId: lineId
+                }
+            });
+
             data.push({
                 lineName,
-                plannings: response
+                plannings: response,
+                settings: responseSetting
             });
         } else {
             const lines = await models.Line.findAll({
@@ -119,9 +127,15 @@ export const getControlBoards = async (req, res) => {
             for (const line of lines) {
                 const lineName = line.name;
                 const response = await connectionDatabase.query(getQueryControlBoard(line.id, date), { type: QueryTypes.SELECT, logging: false });
+                const responseSetting = await models.ControlBoardPlanning.findOne({
+                    where: {
+                        LineId: line.id
+                    }
+                });
                 data.push({
                     lineName,
-                    plannings: response
+                    plannings: response,
+                    settings: responseSetting
                 });
             }
         }
@@ -131,7 +145,54 @@ export const getControlBoards = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
+            isExpressValidation: false,
+            data: {
+                title: "Something Wrong!",
+                message: err.toString()
+            }
+        });
+    }
+}
+
+export const getRemarkByLineAndDate = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                isExpressValidation: true,
+                data: {
+                    title: "Validation Errors!",
+                    message: "Validation Error!",
+                    validationError: errors.array()
+                }
+            });
+        }
+
+        const { lineId, date } = req.params;
+
+        const response = await models.ControlBoardPlanningDetail.findAll({
+            order: [["sequence", "ASC"]],
+            where: {
+                remark: { [Op.ne]: null },
+            },
+            include: [{
+                model: models.ControlBoardPlanning,
+                attributes: [],
+                where: {
+                    LineId: lineId,
+                    date: date
+                }
+            }]
+        });
+
+        return res.status(200).json({
+            message: "Success Fetch Control Board Remark!",
+            data: response
+        });
+    } catch (err) {
+        errorLogging(err.toString());
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",

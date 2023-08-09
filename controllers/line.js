@@ -14,7 +14,7 @@ export const getLines = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -39,7 +39,7 @@ export const getActiveLines = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -78,7 +78,7 @@ export const getLinesByDepartment = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -118,7 +118,7 @@ export const getActiveLinesByDepartment = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -158,7 +158,7 @@ export const createLine = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -197,7 +197,7 @@ export const updateLine = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",

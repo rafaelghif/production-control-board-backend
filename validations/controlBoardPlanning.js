@@ -20,6 +20,12 @@ export const updateControlBoardPlanningRule = [
     body("id").notEmpty().withMessage("Id cannot be null")
         .isUUID("4").withMessage("Invalid id type"),
     body("date").notEmpty().withMessage("Date cannot be null"),
+    body("actualWorkingTimeAll").notEmpty().withMessage("Actual working time cannot be null"),
+    body("productLoadingPlanQty").notEmpty().withMessage("Plan qty cannot be null"),
+    body("tackTime").notEmpty().withMessage("Shift total cannot be null"),
+    body("totalProcessTime").notEmpty().withMessage("Shift total cannot be null"),
+    body("actualWorkingTime").notEmpty().withMessage("Shift total cannot be null"),
+    body("manPowerCount").notEmpty().withMessage("Shift total cannot be null"),
     body("LineId").notEmpty().withMessage("Line id cannot be null")
         .isUUID("4").withMessage("Invalid id type"),
 ];

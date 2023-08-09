@@ -14,7 +14,7 @@ export const getDepartments = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -39,7 +39,7 @@ export const getActiveDepartments = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -79,7 +79,7 @@ export const createDepartment = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",
@@ -119,7 +119,7 @@ export const updateDepartment = async (req, res) => {
         });
     } catch (err) {
         errorLogging(err.toString());
-        return res.status(401).json({
+        return res.status(500).json({
             isExpressValidation: false,
             data: {
                 title: "Something Wrong!",

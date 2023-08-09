@@ -20,6 +20,14 @@ const ControlBoardPlanningDetail = connectionDatabase.define("ControlBoardPlanni
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    remark: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+        defaultValue: null,
+        set(val) {
+            this.setDataValue("remark", val || null);
+        }
+    },
     inActive: {
         type: DataTypes.BOOLEAN,
         defaultValue: false

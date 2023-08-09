@@ -9,9 +9,9 @@ import { createStream } from "rotating-file-stream";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { createServer } from "http";
-
 import "./models/index.js";
 import router from "./routes/index.js";
+import socket from "./libs/socket.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,6 +39,8 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
 const httpServer = createServer(app);
+socket(httpServer);
+
 const PORT = process.env.APP_PORT ?? 8081;
 
 app.use("/api", router);
