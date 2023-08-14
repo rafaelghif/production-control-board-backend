@@ -55,7 +55,7 @@ export const authentication = async (req, res) => {
             });
         }
 
-        const token = jwt.sign({ id: user.id, badgeId: user.badgeId }, process.env.JWT_KEY, { expiresIn: "30m" });
+        const token = jwt.sign({ id: user.id, badgeId: user.badgeId }, process.env.JWT_KEY);
 
         const userData = {
             id: user.id,

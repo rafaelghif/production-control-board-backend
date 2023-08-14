@@ -1,6 +1,6 @@
 import { QueryTypes } from "sequelize";
 import connectionDatabase from "../configs/database.js";
-import { initialData } from "../helpers/seed.js";
+// import { initialData } from "../helpers/seed.js";
 import ControlBoardPlanning from "./controlBoardPlanning.js";
 import ControlBoardPlanningDetail from "./controlBoardPlanningDetail.js";
 import ControlBoardSetting from "./controlBoardSetting.js";
@@ -9,6 +9,7 @@ import Line from "./line.js";
 import OrderComplete from "./orderComplete.js";
 import User from "./user.js";
 import { ControlBoardSummary } from "./controlBoardSummary.js";
+import YmbLine from "./ymbLine.js";
 
 const models = {}
 
@@ -29,6 +30,7 @@ models.ControlBoardPlanning = ControlBoardPlanning;
 models.ControlBoardPlanningDetail = ControlBoardPlanningDetail;
 models.OrderComplete = OrderComplete;
 models.ControlBoardSummary = ControlBoardSummary;
+models.YmbLine = YmbLine;
 
 models.Department.hasMany(models.Line);
 models.Line.belongsTo(models.Department);
@@ -53,5 +55,8 @@ models.OrderComplete.belongsTo(models.Line);
 
 models.Line.hasMany(models.ControlBoardSummary);
 models.ControlBoardSummary.belongsTo(models.Line);
+
+models.Line.hasMany(models.YmbLine);
+models.YmbLine.belongsTo(models.Line);
 
 export default models;

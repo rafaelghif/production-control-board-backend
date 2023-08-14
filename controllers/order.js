@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import { errorLogging } from "../helpers/error.js";
 import { getInhouseSerialNumber, getPlasmaOrderTag } from "../helpers/order.js";
 import models from "../models/index.js";
+import { Op } from "sequelize";
 
 export const getOrders = async (req, res) => {
     try {
@@ -121,6 +122,58 @@ export const createOrder = async (req, res) => {
 
         return res.status(200).json({
             message: `Success Create Order!`,
+            data: response
+        });
+    } catch (err) {
+        errorLogging(err.toString());
+        return res.status(500).json({
+            isExpressValidation: false,
+            data: {
+                title: "Something Wrong!",
+                message: err.toString()
+            }
+        });
+    }
+}
+
+export const getOrderCompletes = async (req, res) => {
+    try {
+        const { search } = req.query;
+        const { orderDate, lineId } = req.params;
+
+        let where = {
+            createdAt: { [Op.between]: [`${orderDate} : 00:00:00`, `${orderDate} : 23:59:59`] },
+            inActive: false
+        };
+
+        if (lineId !== "All") {
+            where = {
+                ...where,
+                "$Line.id$": lineId
+            }
+        }
+
+        if (search) {
+            where = {
+                ...where,
+                [Op.or]: [
+                    { model: { [Op.like]: `%${search}%` } },
+                    { serialNumber: { [Op.like]: `%${search}%` } }
+                ]
+            }
+        }
+
+        const response = await models.OrderComplete.findAll({
+            order: [["createdAt", "DESC"]],
+            where,
+            include: [{
+                model: models.Line,
+                attributes: ["id", "name"]
+            }]
+        });
+
+        return res.status(200).json({
+            message: "Success Fetch Order Completes !",
             data: response
         });
     } catch (err) {
