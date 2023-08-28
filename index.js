@@ -8,13 +8,24 @@ import morgan from "morgan";
 import { createStream } from "rotating-file-stream";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
-import { createServer } from "http";
+import { createServer } from "https";
+import * as http from "http";
+import * as fs from "fs";
+
 import "./models/index.js";
 import router from "./routes/index.js";
 import socket from "./libs/socket.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const certificate = fs.readFileSync("ssl/server.crt");
+const privateKey = fs.readFileSync("ssl/server.key");
+
+const credentialOptions = {
+    key: privateKey,
+    cert: certificate
+};
 
 const app = express();
 
@@ -35,16 +46,19 @@ app.use(cors());
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(morgan("combined", { stream: accessLogStream }));
 app.use(express.static("public"));
-app.use(express.json({ limit: "100mb" }));
-app.use(express.urlencoded({ extended: true, limit: "100mb" }));
+app.use(express.json({ limit: "25mb" }));
+app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 
-const httpServer = createServer(app);
-socket(httpServer);
+// const httpsServer = createServer(credentialOptions, app);
+
+const httpsServer = http.createServer(app);
+
+socket(httpsServer);
 
 const PORT = process.env.APP_PORT ?? 8081;
 
 app.use("/api", router);
 
-httpServer.listen(PORT, () => {
+httpsServer.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });

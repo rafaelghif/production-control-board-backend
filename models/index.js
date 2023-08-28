@@ -10,8 +10,9 @@ import OrderComplete from "./orderComplete.js";
 import User from "./user.js";
 import { ControlBoardSummary } from "./controlBoardSummary.js";
 import YmbLine from "./ymbLine.js";
+import ControlBoardSettingDetail from "./controlBoardSettingDetail.js";
 
-const models = {}
+const models = {};
 
 // connectionDatabase.sync({ force: true }).then(async () => {
 //     await initialData();
@@ -26,6 +27,7 @@ models.User = User;
 models.Department = Department;
 models.Line = Line;
 models.ControlBoardSetting = ControlBoardSetting;
+models.ControlBoardSettingDetail = ControlBoardSettingDetail;
 models.ControlBoardPlanning = ControlBoardPlanning;
 models.ControlBoardPlanningDetail = ControlBoardPlanningDetail;
 models.OrderComplete = OrderComplete;
@@ -46,6 +48,9 @@ models.ControlBoardSetting.belongsTo(models.Line);
 
 models.Line.hasMany(models.ControlBoardPlanning);
 models.ControlBoardPlanning.belongsTo(models.Line);
+
+models.ControlBoardSetting.hasMany(models.ControlBoardSettingDetail);
+models.ControlBoardSettingDetail.belongsTo(models.ControlBoardSetting);
 
 models.ControlBoardPlanning.hasMany(models.ControlBoardPlanningDetail);
 models.ControlBoardPlanningDetail.belongsTo(models.ControlBoardPlanning);

@@ -11,13 +11,14 @@ export const getControlBoardSettingByLineRule = [
 ];
 
 export const createControlBoardSettingRule = [
-    body("actualWorkingTimeAll").notEmpty().withMessage("Actual working time cannot be null"),
-    body("productLoadingPlanQty").notEmpty().withMessage("Plan qty cannot be null"),
-    body("tackTime").notEmpty().withMessage("Shift total cannot be null"),
-    body("totalProcessTime").notEmpty().withMessage("Shift total cannot be null"),
-    body("actualWorkingTime").notEmpty().withMessage("Shift total cannot be null"),
-    body("manPowerCount").notEmpty().withMessage("Shift total cannot be null"),
-    body("LineId").notEmpty().withMessage("Line id cannot be null")
+    body("setting").notEmpty().withMessage("Setting cannot be null")
+        .isObject().withMessage("Invalid setting type"),
+    body("settingDetails").notEmpty().withMessage("Setting Detail cannot be null")
+        .isArray().withMessage("Invalid planning details type")
+];
+
+export const getControlBoardSettingDetailRule = [
+    param("controlBoardSettingId").notEmpty().withMessage("Setting id cannot be null")
         .isUUID("4").withMessage("Invalid id type")
 ];
 
@@ -34,4 +35,11 @@ export const updateControlBoardSettingRule = [
         .isBoolean().withMessage("Invalid inActive type"),
     body("LineId").notEmpty().withMessage("Line id cannot be null")
         .isUUID("4").withMessage("Invalid id type")
+];
+
+export const updateControlBoardSettingDetailRule = [
+    body("id").notEmpty().withMessage("Id cannot be null")
+        .isUUID("4").withMessage("Invalid id type"),
+    body("qty").notEmpty().withMessage("Qty cannot be null")
+        .toInt(),
 ];

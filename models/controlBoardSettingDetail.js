@@ -1,7 +1,7 @@
 import connectionDatabase from "../configs/database.js";
 import { DataTypes } from "sequelize";
 
-const ControlBoardPlanningDetail = connectionDatabase.define("ControlBoardPlanningDetail", {
+const ControlBoardSettingDetail = connectionDatabase.define("ControlBoardSettingDetail", {
     id: {
         type: DataTypes.CHAR(36),
         primaryKey: true,
@@ -18,14 +18,6 @@ const ControlBoardPlanningDetail = connectionDatabase.define("ControlBoardPlanni
     qty: {
         type: DataTypes.INTEGER,
         allowNull: false
-    },
-    remark: {
-        type: DataTypes.STRING(50),
-        allowNull: true,
-        defaultValue: null,
-        set(val) {
-            this.setDataValue("remark", val || null);
-        }
     },
     inActive: {
         type: DataTypes.BOOLEAN,
@@ -47,4 +39,4 @@ const ControlBoardPlanningDetail = connectionDatabase.define("ControlBoardPlanni
     }
 });
 
-export default ControlBoardPlanningDetail;
+export default ControlBoardSettingDetail;

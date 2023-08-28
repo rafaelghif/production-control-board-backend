@@ -5,7 +5,7 @@ export const getControlBoardPlanningRule = [
 ];
 
 export const getControlBoardPlanningDetailRule = [
-    param("controlBoardPlanningId").notEmpty().withMessage("Line id cannot be null")
+    param("controlBoardPlanningId").notEmpty().withMessage("Planning id cannot be null")
         .isUUID("4").withMessage("Invalid id type")
 ];
 
