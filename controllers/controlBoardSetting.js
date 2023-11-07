@@ -175,6 +175,7 @@ export const createControlBoardSetting = async (req, res) => {
         const { badgeId } = req.decoded;
 
         const controlBoardSetting = await models.ControlBoardSetting.create({
+            shift: setting.shift,
             actualWorkingTimeAll: setting.actualWorkingTimeAll,
             productLoadingPlanQty: setting.productLoadingPlanQty,
             productLoadingPlanBacklogQty: setting.productLoadingPlanBacklogQty,
@@ -237,6 +238,7 @@ export const updateControlBoardSetting = async (req, res) => {
 
         const {
             id,
+            shift,
             actualWorkingTimeAll,
             productLoadingPlanQty,
             productLoadingPlanBacklogQty,
@@ -254,6 +256,7 @@ export const updateControlBoardSetting = async (req, res) => {
         const { badgeId } = req.decoded;
 
         const response = await models.ControlBoardSetting.update({
+            shift,
             actualWorkingTimeAll,
             productLoadingPlanQty,
             productLoadingPlanBacklogQty,

@@ -149,6 +149,7 @@ export const createControlBoardPlanning = async (req, res) => {
         }
 
         const controlBoardPlanning = await models.ControlBoardPlanning.create({
+            shift: planning.shift,
             date: planning.date,
             actualWorkingTimeAll: planning.actualWorkingTimeAll,
             productLoadingPlanQty: planning.productLoadingPlanQty,
@@ -212,6 +213,7 @@ export const updateControlBoardPlanning = async (req, res) => {
 
         const {
             id,
+            shift,
             date,
             actualWorkingTimeAll,
             productLoadingPlanQty,
@@ -247,6 +249,7 @@ export const updateControlBoardPlanning = async (req, res) => {
         }
 
         const response = await models.ControlBoardPlanning.update({
+            shift,
             date,
             actualWorkingTimeAll,
             productLoadingPlanQty,

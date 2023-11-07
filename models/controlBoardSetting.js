@@ -7,6 +7,10 @@ const ControlBoardSetting = connectionDatabase.define("ControlBoardSetting", {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4
     },
+    shift: {
+        type: DataTypes.ENUM("Long", "Short"),
+        defaultValue: "Long"
+    },
     actualWorkingTimeAll: {
         type: DataTypes.INTEGER,
         allowNull: false,

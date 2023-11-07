@@ -7,6 +7,10 @@ const ControlBoardPlanning = connectionDatabase.define("ControlBoardPlanning", {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4
     },
+    shift: {
+        type: DataTypes.ENUM("Long", "Short"),
+        defaultValue: "Long"
+    },
     date: {
         type: DataTypes.DATEONLY,
         allowNull: false
