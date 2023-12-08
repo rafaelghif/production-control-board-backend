@@ -231,10 +231,10 @@ export const getControlBoardsShift = async (req, res) => {
                     response = response.filter((res) => (res.planningTime >= 0 && res.planningTime <= 6) || (res.planningTime >= 18 && res.planningTime <= 23));
                 }
             } else if (shift === "Short") {
-                if (currentTime >= 6 && currentTime <= 13) {
-                    response = response.filter((res) => res.planningTime >= 6 && res.planningTime <= 13);
-                } else if (currentTime >= 13 && currentTime <= 21) {
-                    response = response.filter((res) => res.planningTime >= 13 && res.planningTime <= 21);
+                if (currentTime >= 6 && currentTime <= 14) {
+                    response = response.filter((res) => res.planningTime >= 6 && res.planningTime < 15);
+                } else if (currentTime >= 14 && currentTime <= 21) {
+                    response = response.filter((res) => res.planningTime >= 14 && res.planningTime < 22);
                 } else if ((currentTime >= 21 && currentTime <= 23) || (currentTime >= 0 && currentTime <= 5)) {
                     response = response.filter((res) => (res.planningTime >= 21 && res.planningTime <= 23) || (res.planningTime >= 0 && res.planningTime <= 5));
                 }
