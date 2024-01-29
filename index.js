@@ -1,44 +1,45 @@
-import * as dotenv from "dotenv";
-dotenv.config();
-import rateLimit from "express-rate-limit";
-import express from "express";
 import cors from "cors";
+import * as dotenv from "dotenv";
+import express from "express";
+import rateLimit from "express-rate-limit";
+// import * as fs from "fs";
 import helmet from "helmet";
-import morgan from "morgan";
-import { createStream } from "rotating-file-stream";
-import path, { dirname } from "path";
-import { fileURLToPath } from "url";
-import { createServer } from "https";
 import * as http from "http";
-import * as fs from "fs";
+// import { createServer } from "https";
+import morgan from "morgan";
+import path, { dirname } from "path";
+import { createStream } from "rotating-file-stream";
+import { fileURLToPath } from "url";
 
+import socket from "./libs/socket.js";
 import "./models/index.js";
 import router from "./routes/index.js";
-import socket from "./libs/socket.js";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const certificate = fs.readFileSync("ssl/server.crt");
-const privateKey = fs.readFileSync("ssl/server.key");
+// const certificate = fs.readFileSync("ssl/server.crt");
+// const privateKey = fs.readFileSync("ssl/server.key");
 
-const credentialOptions = {
-    key: privateKey,
-    cert: certificate
-};
+// const credentialOptions = {
+// 	key: privateKey,
+// 	cert: certificate,
+// };
 
 const app = express();
 
 const accessLogStream = createStream("access.log", {
-    interval: "1d",
-    path: path.join(__dirname, "logs", "access")
+	interval: "1d",
+	path: path.join(__dirname, "logs", "access"),
 });
 
 const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000,
-    max: 70,
-    standardHeaders: true,
-    legacyHeaders: false
+	windowMs: 1 * 60 * 1000,
+	max: 70,
+	standardHeaders: true,
+	legacyHeaders: false,
 });
 
 app.use(limiter);
@@ -60,5 +61,5 @@ const PORT = process.env.APP_PORT ?? 8081;
 app.use("/api", router);
 
 httpsServer.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
+	console.log(`Server is running on port ${PORT}.`);
 });

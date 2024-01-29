@@ -1,12 +1,13 @@
 import { Router } from "express";
+
 import authenticationRouter from "./authentication.js";
+import controlBoardRouter from "./controlBoard.js";
+import controlBoardPlanningRouter from "./controlBoardPlanning.js";
+import controlBoardSettingRouter from "./controlBoardSetting.js";
 import departmentRouter from "./department.js";
 import lineRouter from "./line.js";
-import userRouter from "./user.js";
-import controlBoardSettingRouter from "./controlBoardSetting.js";
-import controlBoardPlanningRouter from "./controlBoardPlanning.js";
 import orderRouter from "./order.js";
-import controlBoardRouter from "./controlBoard.js";
+import userRouter from "./user.js";
 
 const router = Router();
 

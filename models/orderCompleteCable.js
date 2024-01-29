@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 
 import connectionDatabase from "../configs/database.js";
 
-const OrderComplete = connectionDatabase.define("OrderComplete", {
+const OrderCompleteCable = connectionDatabase.define("OrderCompleteCable", {
 	id: {
 		type: DataTypes.CHAR(36),
 		primaryKey: true,
@@ -15,7 +15,6 @@ const OrderComplete = connectionDatabase.define("OrderComplete", {
 	serialNumber: {
 		type: DataTypes.STRING(11),
 		allowNull: false,
-		unique: true,
 	},
 	serialNumberType: {
 		type: DataTypes.ENUM("Plasma Order Tag", "Inhouse"),
@@ -23,11 +22,7 @@ const OrderComplete = connectionDatabase.define("OrderComplete", {
 	},
 	barcodeIssueNo: {
 		type: DataTypes.STRING(30),
-		allowNull: true,
-		defaultValue: null,
-		set(val) {
-			this.setDataValue("barcodeIssueNo", val || null);
-		},
+		allowNull: false,
 	},
 	sapLinkageNo: {
 		type: DataTypes.STRING(25),
@@ -57,4 +52,4 @@ const OrderComplete = connectionDatabase.define("OrderComplete", {
 	},
 });
 
-export default OrderComplete;
+export default OrderCompleteCable;
