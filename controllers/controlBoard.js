@@ -396,8 +396,6 @@ export const getPtrPerLine = async (req, res) => {
 
 		const { lineId, month, year } = req.params;
 
-		console.log(req.params);
-
 		const lineIndex = ["2927e6f4-408d-4c70-be68-f2145d307dcc"];
 
 		const viewName = lineIndex.includes(lineId) ? "v_ptr_cable" : "v_ptr";
