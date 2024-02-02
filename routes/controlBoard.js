@@ -4,6 +4,7 @@ import {
 	getControlBoards,
 	getControlBoardsShift,
 	getPtrPerLine,
+	getPtrPerLineSql,
 	getRemarkByLineAndDate,
 } from "../controllers/controlBoard.js";
 import {
@@ -30,6 +31,11 @@ controlBoardRouter.get("/remark/line/:lineId/date/:date", [
 controlBoardRouter.get("/ptr/line/:lineId/month/:month/year/:year", [
 	getPtrPerLineRule,
 	getPtrPerLine,
+]);
+
+controlBoardRouter.get("/ptr-pts/line/:lineId/month/:month/year/:year", [
+	getPtrPerLineRule,
+	getPtrPerLineSql,
 ]);
 
 export default controlBoardRouter;

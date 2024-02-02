@@ -1,5 +1,7 @@
 import { validationResult } from "express-validator";
+import { QueryTypes } from "sequelize";
 
+import { connectionDatabaseSql } from "../configs/database.js";
 import { errorLogging } from "../helpers/error.js";
 import models from "../models/index.js";
 
@@ -36,6 +38,29 @@ export const getActiveLines = async (req, res) => {
 
 		return res.status(200).json({
 			message: "Success Fetch Active Lines!",
+			data: response,
+		});
+	} catch (err) {
+		errorLogging(err.toString());
+		return res.status(500).json({
+			isExpressValidation: false,
+			data: {
+				title: "Something Wrong!",
+				message: err.toString(),
+			},
+		});
+	}
+};
+
+export const getActiveLinesSql = async (req, res) => {
+	try {
+		const response = await connectionDatabaseSql.query(
+			"SELECT DISTINCT [YMBLine] as name FROM [dbpp].[PC].[tblYMBLine] WHERE [InActive] = 0 ORDER BY [YMBLine] ASC",
+			{ type: QueryTypes.SELECT},
+		);
+
+		return res.status(200).json({
+			message: "Success Fetch Active Lines SQL!",
 			data: response,
 		});
 	} catch (err) {

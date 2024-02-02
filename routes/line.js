@@ -4,6 +4,7 @@ import {
 	createLine,
 	getActiveLines,
 	getActiveLinesByDepartment,
+	getActiveLinesSql,
 	getLines,
 	getLinesByDepartment,
 	updateLine,
@@ -20,6 +21,7 @@ const lineRouter = Router();
 
 lineRouter.get("/", [authVerify, getLines]);
 lineRouter.get("/active", [getActiveLines]);
+lineRouter.get("/sql/active", [getActiveLinesSql]);
 lineRouter.get("/departmentId/:departmentId", [
 	authVerify,
 	getLinesByDepartmentRule,
