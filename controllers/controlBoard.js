@@ -13,10 +13,13 @@ const getQueryControlBoard = (lineId, date, shift = null) => {
 	const tomorrowDate = addDay(date, 1);
 
 	const lineIndex = ["2927e6f4-408d-4c70-be68-f2145d307dcc"];
+	const lineIndexNode = ["a3b5744c-71ce-4a35-94ba-efd2cc52c641"];
 
 	let view = lineIndex.includes(lineId)
 		? "v_ordercompletes_cable"
 		: "v_ordercompletes";
+
+	view = lineIndexNode.includes(lineId) ? "v_ordercompletes_node" : view;
 
 	let whereDate = `
         (
@@ -38,6 +41,10 @@ const getQueryControlBoard = (lineId, date, shift = null) => {
 		view = lineIndex.includes(lineId)
 			? "v_ordercompletes_half_total_cable"
 			: "v_ordercompletes_half_total";
+
+		view = lineIndexNode.includes(lineId)
+			? "v_ordercompletes_half_node_total"
+			: view;
 	}
 
 	const query = `
@@ -400,7 +407,12 @@ export const getPtrPerLine = async (req, res) => {
 
 		const lineIndex = ["2927e6f4-408d-4c70-be68-f2145d307dcc"];
 
-		const viewName = lineIndex.includes(lineId) ? "v_ptr_cable" : "v_ptr";
+		const lineIndexNode = ["a3b5744c-71ce-4a35-94ba-efd2cc52c641"];
+
+		let viewName = lineIndex.includes(lineId) ? "v_ptr_cable" : "v_ptr";
+
+		viewName = lineIndexNode.includes(lineId) ? "v_ptr_node" : viewName;
+
 		const query = `SELECT * FROM ${viewName} WHERE createdMonth = '${month}' AND createdYear = '${year}' AND LineId = '${lineId}' ORDER BY model ASC`;
 
 		const response = await connectionDatabase.query(query, {
@@ -441,7 +453,6 @@ export const getPtrPerLineSql = async (req, res) => {
 
 		const viewName = "[dbpp].[dbo].[v_ptr_control_board]";
 		const query = `SELECT * FROM ${viewName} WHERE createdMonth = '${month}' AND createdYear = '${year}' AND YMBLine = '${lineId.replace("-", "/")}' ORDER BY model ASC`;
-		console.log(query);
 
 		const response = await connectionDatabaseSql.query(query, {
 			type: QueryTypes.SELECT,

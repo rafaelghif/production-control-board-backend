@@ -1,12 +1,28 @@
 import { validationResult } from "express-validator";
+import { Op } from "sequelize";
 
 import { errorLogging } from "../helpers/error.js";
 import models from "../models/index.js";
 
 export const getUsers = async (req, res) => {
 	try {
+		const { search } = req.query;
+
+		let where = {};
+
+		if (search) {
+			where = {
+				[Op.or]: [
+					{ id: search },
+					{ badgeId: { [Op.like]: `%${search}%` } },
+					{ name: { [Op.like]: `%${search}%` } },
+				],
+			};
+		}
+
 		const response = await models.User.findAll({
 			order: [["badgeId", "ASC"]],
+			where,
 			include: [
 				{
 					model: models.Department,

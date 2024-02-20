@@ -38,7 +38,8 @@ const productionConfigSql = {
 };
 
 const config = env === "Development" ? developmentConfig : productionConfig;
-const configSql = env === "Development" ? developmentConfigSql : productionConfigSql;
+const configSql =
+	env === "Development" ? developmentConfigSql : productionConfigSql;
 
 const connectionDatabase = new Sequelize(
 	config.database,
@@ -48,6 +49,10 @@ const connectionDatabase = new Sequelize(
 		host: config.host,
 		port: config.port,
 		dialect: "mysql",
+		define: {
+			charset: "utf8",
+			collate: "utf8_general_ci",
+		},
 		timezone: "+07:00",
 	},
 );

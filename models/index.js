@@ -13,6 +13,7 @@ import OrderComplete from "./orderComplete.js";
 import OrderCompleteCable from "./orderCompleteCable.js";
 import User from "./user.js";
 import YmbLine from "./ymbLine.js";
+import OrderCompleteNode from "./orderCompleteNode.js";
 
 const models = {};
 
@@ -68,6 +69,7 @@ models.ControlBoardPlanning = ControlBoardPlanning;
 models.ControlBoardPlanningDetail = ControlBoardPlanningDetail;
 models.OrderComplete = OrderComplete;
 models.OrderCompleteCable = OrderCompleteCable;
+models.OrderCompleteNode = OrderCompleteNode;
 models.ControlBoardSummary = ControlBoardSummary;
 models.YmbLine = YmbLine;
 
@@ -103,5 +105,8 @@ models.YmbLine.belongsTo(models.Line);
 
 models.Line.hasMany(models.OrderCompleteCable);
 models.OrderCompleteCable.belongsTo(models.Line);
+
+models.Line.hasMany(models.OrderCompleteNode);
+models.OrderCompleteNode.belongsTo(models.Line);
 
 export default models;
