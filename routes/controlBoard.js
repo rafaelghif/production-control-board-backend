@@ -11,6 +11,7 @@ import {
 } from "../controllers/controlBoard.js";
 import { authVerify } from "../middlewares/auth.js";
 import {
+	createPartOrderRule,
 	getControlBoardsRule,
 	getControlBoardsShiftRule,
 	getPtrPerLineRule,
@@ -46,6 +47,10 @@ controlBoardRouter.get("/part-not-registered", [
 	getPtsPartNotRegister,
 ]);
 
-controlBoardRouter.post("/part-not-registered", [authVerify, createPartOrder]);
+controlBoardRouter.post("/part-not-registered", [
+	authVerify,
+	createPartOrderRule,
+	createPartOrder,
+]);
 
 export default controlBoardRouter;

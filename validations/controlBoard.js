@@ -1,4 +1,4 @@
-import { param } from "express-validator";
+import { body, param } from "express-validator";
 
 export const getControlBoardsRule = [
 	param("lineId").notEmpty().withMessage("Line cannot be null"),
@@ -20,4 +20,9 @@ export const getPtrPerLineRule = [
 	param("lineId").notEmpty().withMessage("Line cannot be null"),
 	param("month").notEmpty().withMessage("Month cannot be null"),
 	param("year").notEmpty().withMessage("Year cannot be null"),
+];
+
+export const createPartOrderRule = [
+	body("PartOrder").notEmpty().withMessage("Part Order cannot be null"),
+	body("line").notEmpty().withMessage("Line cannot be null"),
 ];
