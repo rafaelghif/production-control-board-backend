@@ -473,3 +473,93 @@ export const getPtrPerLineSql = async (req, res) => {
 		});
 	}
 };
+
+export const getPtsPartNotRegister = async (req, res) => {
+	try {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				isExpressValidation: true,
+				data: {
+					title: "Validation Errors!",
+					message: "Validation Error!",
+					validationError: errors.array(),
+				},
+			});
+		}
+
+		const query =
+			"SELECT DISTINCT PartOrder FROM dbpp.PD.tblCompletion WHERE PartOrder NOT IN(SELECT PartOrder FROM dbpp.pc.tblYMBLine) ORDER BY PartOrder ASC";
+		const response = await connectionDatabaseSql.query(query, {
+			type: QueryTypes.SELECT,
+		});
+
+		return res.status(200).json({
+			message: "Success Fetch Part Not Registered!",
+			data: response,
+		});
+	} catch (err) {
+		errorLogging(err.toString());
+		return res.status(500).json({
+			isExpressValidation: false,
+			data: {
+				title: "Something Wrong!",
+				message: err.toString(),
+			},
+		});
+	}
+};
+
+export const createPartOrder = async (req, res) => {
+	try {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				isExpressValidation: true,
+				data: {
+					title: "Validation Errors!",
+					message: "Validation Error!",
+					validationError: errors.array(),
+				},
+			});
+		}
+
+		const { PartOrder, line } = req.body;
+		const { badgeId } = req.decoded;
+
+		const query = `INSERT INTO dbpp.PC.tblYMBLine(
+			PartOrder
+			,YMBLine
+			,PackingLine
+			,InActive
+			,ModifyBy
+			,ModifyOn
+		)
+		VALUES (
+			'${PartOrder}'
+			,'${line}'
+			,''
+			,'0'
+			,'${badgeId}'
+			,GETDATE()
+		)`;
+
+		const response = await connectionDatabaseSql.query(query, {
+			type: QueryTypes.INSERT,
+		});
+
+		return res.status(200).json({
+			message: "Success Create Part Order!",
+			data: response,
+		});
+	} catch (err) {
+		errorLogging(err.toString());
+		return res.status(500).json({
+			isExpressValidation: false,
+			data: {
+				title: "Something Wrong!",
+				message: err.toString(),
+			},
+		});
+	}
+};

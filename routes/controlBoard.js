@@ -1,12 +1,15 @@
 import { Router } from "express";
 
 import {
+	createPartOrder,
 	getControlBoards,
 	getControlBoardsShift,
 	getPtrPerLine,
 	getPtrPerLineSql,
+	getPtsPartNotRegister,
 	getRemarkByLineAndDate,
 } from "../controllers/controlBoard.js";
+import { authVerify } from "../middlewares/auth.js";
 import {
 	getControlBoardsRule,
 	getControlBoardsShiftRule,
@@ -37,5 +40,12 @@ controlBoardRouter.get("/ptr-pts/line/:lineId/month/:month/year/:year", [
 	getPtrPerLineRule,
 	getPtrPerLineSql,
 ]);
+
+controlBoardRouter.get("/part-not-registered", [
+	authVerify,
+	getPtsPartNotRegister,
+]);
+
+controlBoardRouter.post("/part-not-registered", [authVerify, createPartOrder]);
 
 export default controlBoardRouter;
