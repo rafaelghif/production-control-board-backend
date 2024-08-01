@@ -30,6 +30,14 @@ const ControlBoardPlanningDetail = connectionDatabase.define(
 				this.setDataValue("remark", val || null);
 			},
 		},
+		breakTime: {
+			type: DataTypes.STRING(50),
+			allowNull: true,
+			defaultValue: null,
+			set(val) {
+				this.setDataValue("breakTime", val || null);
+			},
+		},
 		inActive: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false,

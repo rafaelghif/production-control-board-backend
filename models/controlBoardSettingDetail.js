@@ -22,6 +22,22 @@ const ControlBoardSettingDetail = connectionDatabase.define(
 			type: DataTypes.INTEGER,
 			allowNull: false,
 		},
+		remark: {
+			type: DataTypes.STRING(50),
+			allowNull: true,
+			defaultValue: null,
+			set(val) {
+				this.setDataValue("remark", val || null);
+			},
+		},
+		breakTime: {
+			type: DataTypes.STRING(50),
+			allowNull: true,
+			defaultValue: null,
+			set(val) {
+				this.setDataValue("breakTime", val || null);
+			},
+		},
 		inActive: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false,

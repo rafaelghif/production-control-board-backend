@@ -4,6 +4,7 @@ import {
 	createPartOrder,
 	getControlBoards,
 	getControlBoardsShift,
+	getPtrMonthly,
 	getPtrPerLine,
 	getPtrPerLineSql,
 	getPtsPartNotRegister,
@@ -14,6 +15,7 @@ import {
 	createPartOrderRule,
 	getControlBoardsRule,
 	getControlBoardsShiftRule,
+	getPtrMonthlyRule,
 	getPtrPerLineRule,
 	getRemarkByLineAndDateRule,
 } from "../validations/controlBoard.js";
@@ -32,9 +34,15 @@ controlBoardRouter.get("/remark/line/:lineId/date/:date", [
 	getRemarkByLineAndDateRule,
 	getRemarkByLineAndDate,
 ]);
+
 controlBoardRouter.get("/ptr/line/:lineId/month/:month/year/:year", [
 	getPtrPerLineRule,
 	getPtrPerLine,
+]);
+
+controlBoardRouter.get("/ptr/month/:month/year/:year", [
+	getPtrMonthlyRule,
+	getPtrMonthly,
 ]);
 
 controlBoardRouter.get("/ptr-pts/line/:lineId/month/:month/year/:year", [

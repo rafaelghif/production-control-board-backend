@@ -41,6 +41,8 @@ const config = env === "Development" ? developmentConfig : productionConfig;
 const configSql =
 	env === "Development" ? developmentConfigSql : productionConfigSql;
 
+console.log(config);
+
 const connectionDatabase = new Sequelize(
 	config.database,
 	config.username,

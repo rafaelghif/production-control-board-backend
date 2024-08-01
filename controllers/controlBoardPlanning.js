@@ -312,13 +312,14 @@ export const updateControlBoardPlanningDetail = async (req, res) => {
 			});
 		}
 
-		const { id, qty, remark } = req.body;
+		const { id, qty, remark, breakTime } = req.body;
 		const { badgeId } = req.decoded;
 
 		const response = await models.ControlBoardPlanningDetail.update(
 			{
 				qty,
 				remark,
+				breakTime,
 				updatedBy: badgeId,
 			},
 			{ where: { id } },

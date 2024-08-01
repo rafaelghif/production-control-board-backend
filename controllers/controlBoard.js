@@ -406,7 +406,6 @@ export const getPtrPerLine = async (req, res) => {
 		const { lineId, month, year } = req.params;
 
 		const lineIndex = ["2927e6f4-408d-4c70-be68-f2145d307dcc"];
-
 		const lineIndexNode = ["a3b5744c-71ce-4a35-94ba-efd2cc52c641"];
 
 		let viewName = lineIndex.includes(lineId) ? "v_ptr_cable" : "v_ptr";
@@ -422,6 +421,56 @@ export const getPtrPerLine = async (req, res) => {
 		return res.status(200).json({
 			message: "Success Fetch PTR PerLine!",
 			data: response,
+		});
+	} catch (err) {
+		errorLogging(err.toString());
+		return res.status(500).json({
+			isExpressValidation: false,
+			data: {
+				title: "Something Wrong!",
+				message: err.toString(),
+			},
+		});
+	}
+};
+
+export const getPtrMonthly = async (req, res) => {
+	try {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				isExpressValidation: true,
+				data: {
+					title: "Validation Errors!",
+					message: "Validation Error!",
+					validationError: errors.array(),
+				},
+			});
+		}
+
+		const { month, year } = req.params;
+
+		const query = `SELECT * FROM v_ptr WHERE createdMonth = '${month}' AND createdYear = '${year}' ORDER BY model ASC`;
+		const query2 = `SELECT * FROM v_ptr_node WHERE createdMonth = '${month}' AND createdYear = '${year}' ORDER BY model ASC`;
+		const query3 = `SELECT * FROM v_ptr_cable WHERE createdMonth = '${month}' AND createdYear = '${year}' ORDER BY model ASC`;
+
+		const response1 = await connectionDatabase.query(query, {
+			type: QueryTypes.SELECT,
+		});
+
+		const response2 = await connectionDatabase.query(query2, {
+			type: QueryTypes.SELECT,
+		});
+
+		const response3 = await connectionDatabase.query(query3, {
+			type: QueryTypes.SELECT,
+		});
+
+		const combinedResponse = [...response1, ...response2, ...response3];
+
+		return res.status(200).json({
+			message: "Success Fetch PTR Monthly!",
+			data: combinedResponse,
 		});
 	} catch (err) {
 		errorLogging(err.toString());

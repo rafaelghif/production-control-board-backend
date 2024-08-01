@@ -1,6 +1,10 @@
 import { validationResult } from "express-validator";
 
 import connectionDatabase from "../configs/database.js";
+import {
+	initialValueDetailLong,
+	initialValueDetailShort,
+} from "../constants/shift.js";
 import { errorLogging } from "../helpers/error.js";
 import models from "../models/index.js";
 
@@ -236,6 +240,7 @@ export const createControlBoardSetting = async (req, res) => {
 };
 
 export const updateControlBoardSetting = async (req, res) => {
+	const transaction = await connectionDatabase.transaction();
 	try {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
@@ -268,6 +273,37 @@ export const updateControlBoardSetting = async (req, res) => {
 
 		const { badgeId } = req.decoded;
 
+		const controlBoardSetting =
+			await models.ControlBoardSetting.findByPk(id);
+
+		if (controlBoardSetting.shift !== shift) {
+			await models.ControlBoardSettingDetail.destroy({
+				where: {
+					ControlBoardSettingId: id,
+				},
+				transaction,
+			});
+
+			const shiftData =
+				shift === "Short"
+					? initialValueDetailShort
+					: initialValueDetailLong;
+
+			for (const shiftDetail of shiftData) {
+				await models.ControlBoardSettingDetail.create(
+					{
+						time: shiftDetail.time,
+						sequence: shiftDetail.sequence,
+						qty: shiftDetail.qty,	
+						createdBy: badgeId,
+						updatedBy: badgeId,
+						ControlBoardSettingId: id,
+					},
+					{ transaction },
+				);
+			}
+		}
+
 		const response = await models.ControlBoardSetting.update(
 			{
 				shift,
@@ -285,14 +321,17 @@ export const updateControlBoardSetting = async (req, res) => {
 				updatedBy: badgeId,
 				LineId,
 			},
-			{ where: { id } },
+			{ where: { id }, transaction },
 		);
 
+		transaction.commit();
+
 		return res.status(200).json({
-			message: "Success Create Control Board Setting!",
+			message: "Success Update Control Board Setting!",
 			data: response,
 		});
 	} catch (err) {
+		await transaction.rollback();
 		errorLogging(err.toString());
 		return res.status(500).json({
 			isExpressValidation: false,
@@ -318,12 +357,14 @@ export const updateControlBoardSettingDetail = async (req, res) => {
 			});
 		}
 
-		const { id, qty } = req.body;
+		const { id, qty, remark, breakTime } = req.body;
 		const { badgeId } = req.decoded;
 
 		const response = await models.ControlBoardSettingDetail.update(
 			{
 				qty,
+				remark,
+				breakTime,
 				updatedBy: badgeId,
 			},
 			{ where: { id } },

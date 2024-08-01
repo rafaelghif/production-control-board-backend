@@ -10,7 +10,7 @@ const User = connectionDatabase.define("User", {
 		defaultValue: DataTypes.UUIDV4,
 	},
 	badgeId: {
-		type: DataTypes.STRING(8),
+		type: DataTypes.STRING(9),
 		allowNull: false,
 		unique: true,
 		validate: {

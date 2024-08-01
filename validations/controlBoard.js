@@ -22,6 +22,11 @@ export const getPtrPerLineRule = [
 	param("year").notEmpty().withMessage("Year cannot be null"),
 ];
 
+export const getPtrMonthlyRule = [
+	param("month").notEmpty().withMessage("Month cannot be null"),
+	param("year").notEmpty().withMessage("Year cannot be null"),
+];
+
 export const createPartOrderRule = [
 	body("PartOrder").notEmpty().withMessage("Part Order cannot be null"),
 	body("line").notEmpty().withMessage("Line cannot be null"),
