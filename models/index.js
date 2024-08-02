@@ -11,9 +11,9 @@ import Department from "./department.js";
 import Line from "./line.js";
 import OrderComplete from "./orderComplete.js";
 import OrderCompleteCable from "./orderCompleteCable.js";
+import OrderCompleteNode from "./orderCompleteNode.js";
 import User from "./user.js";
 import YmbLine from "./ymbLine.js";
-import OrderCompleteNode from "./orderCompleteNode.js";
 
 const models = {};
 
@@ -24,7 +24,7 @@ const models = {};
 connectionDatabase.sync();
 
 connectionDatabase.query(
-	"CREATE OR REPLACE VIEW v_controlboardplannings AS SELECT p.LineId, p.date as planningDate, HOUR(pd.time) AS planningTime, pd.sequence, pd.qty,pd.remark FROM controlboardplannings AS p JOIN controlboardplanningdetails AS pd ON p.id = pd.ControlBoardPlanningId WHERE p.inActive = 0 AND pd.inActive = 0 ORDER BY p.date, pd.sequence ASC",
+	"CREATE OR REPLACE VIEW v_controlboardplannings AS SELECT p.LineId, p.date as planningDate, HOUR(pd.time) AS planningTime, pd.sequence, pd.qty,pd.remark,breakTime FROM controlboardplannings AS p JOIN controlboardplanningdetails AS pd ON p.id = pd.ControlBoardPlanningId WHERE p.inActive = 0 AND pd.inActive = 0 ORDER BY p.date, pd.sequence ASC",
 	{ type: QueryTypes.RAW },
 );
 connectionDatabase.query(

@@ -56,7 +56,8 @@ const getQueryControlBoard = (lineId, date, shift = null) => {
             sequence,
             qty,
             SUM(qty) OVER(ORDER BY sequence) AS qtyCum,
-            remark
+            remark,
+			breakTime
         FROM
             v_controlboardplannings
         WHERE
@@ -88,7 +89,8 @@ const getQueryControlBoard = (lineId, date, shift = null) => {
         IF(orders.total IS NULL, 0, orders.total) AS totalOrderComplete,
         SUM(IF(orders.total IS NULL, 0, orders.total)) OVER (ORDER BY plannings.sequence) AS totalOrderCompleteCumulative,
         (SUM(IF(orders.total IS NULL, 0, orders.total)) OVER (ORDER BY plannings.sequence) - plannings.qtyCum) AS differenceQty,
-        plannings.remark
+        plannings.remark,
+		plannings.breakTime
     FROM
         plannings
     LEFT JOIN

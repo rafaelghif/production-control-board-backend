@@ -179,12 +179,14 @@ export const createControlBoardPlanning = async (req, res) => {
 		);
 
 		for (const planningDetail of planningDetails) {
-			const { time, sequence, qty } = planningDetail;
+			const { time, sequence, qty, remark, breakTime } = planningDetail;
 			await models.ControlBoardPlanningDetail.create(
 				{
 					time,
 					sequence,
 					qty,
+					remark,
+					breakTime,
 					createdBy: badgeId,
 					updatedBy: badgeId,
 					ControlBoardPlanningId: controlBoardPlanning.id,
