@@ -7,6 +7,30 @@ export const decodeYokogawaYear = (yearString) => {
 		case "1":
 			year = "24";
 			break;
+		case "2":
+			year = "25";
+			break;
+		case "3":
+			year = "26";
+			break;
+		case "4":
+			year = "27";
+			break;
+		case "5":
+			year = "28";
+			break;
+		case "6":
+			year = "29";
+			break;
+		case "7":
+			year = "30";
+			break;
+		case "8":
+			year = "31";
+			break;
+		case "9":
+			year = "32";
+			break;
 		default:
 			break;
 	}
