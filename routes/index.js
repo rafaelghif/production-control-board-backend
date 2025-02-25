@@ -4,6 +4,7 @@ import authenticationRouter from "./authentication.js";
 import controlBoardRouter from "./controlBoard.js";
 import controlBoardPlanningRouter from "./controlBoardPlanning.js";
 import controlBoardSettingRouter from "./controlBoardSetting.js";
+import dashboardRouter from "./dashboard.js";
 import departmentRouter from "./department.js";
 import lineRouter from "./line.js";
 import orderRouter from "./order.js";
@@ -19,5 +20,6 @@ router.use("/control-board", controlBoardRouter);
 router.use("/control-board-setting", controlBoardSettingRouter);
 router.use("/control-board-planning", controlBoardPlanningRouter);
 router.use("/order", orderRouter);
+router.use("/dashboard", dashboardRouter);
 
 export default router;
