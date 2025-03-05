@@ -12,6 +12,10 @@ const Line = connectionDatabase.define("Line", {
 		type: DataTypes.STRING(70),
 		allowNull: false,
 	},
+	sequence: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
 	inActive: {
 		type: DataTypes.BOOLEAN,
 		defaultValue: false,

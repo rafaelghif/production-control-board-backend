@@ -1,4 +1,4 @@
-import { format, startOfHour } from "date-fns";
+import { addHours, format, startOfHour } from "date-fns";
 import { QueryTypes } from "sequelize";
 
 import connectionDatabase from "../configs/database.js";
@@ -9,59 +9,109 @@ export const getDataFromAllLines = async (req, res) => {
 		const { date } = req.params;
 
 		const currentDate = new Date();
-		const startTime = "06:00:00";
-		const endTime = format(startOfHour(currentDate), "HH:mm:ss");
+		const startTime = "06:30:00";
+		const endTime = format(
+			addHours(startOfHour(currentDate), -1),
+			"HH:mm:ss",
+		);
+		const strCurrDate = format(currentDate, "yyyy-MM-dd");
 		const startDate = `${date} ${startTime}`;
+		const endDate = `${date} ${format(startOfHour(currentDate), "HH:mm:ss")}`;
 
-		const controlBoardPlanningSubQuery = `
-            (
+		const orderCompleteQuery = `
+        WITH
+            CTE_PLAN_PASS AS (
+                SELECT
+                    CBP.id,
+                    CBP.LineId,
+                    SUM(CBPD.qty) as qty
+                FROM
+                    controlboardplannings as CBP
+                    JOIN controlboardplanningdetails as CBPD ON CBP.id = CBPD.ControlBoardPlanningId
+                WHERE
+                    CBP.date = '${strCurrDate}'
+                    AND CBPD.time BETWEEN '${startTime}' AND '${endTime}'
+                GROUP BY
+                    CBP.id,
+                    CBP.LineId
+            ),
+            CTE_PLAN_CURR AS (
+                SELECT
+                    CBP.id,
+                    CBP.LineId,
+                    SUM(CBPD.qty) as qty
+                FROM
+                    controlboardplannings as CBP
+                    JOIN controlboardplanningdetails as CBPD ON CBP.id = CBPD.ControlBoardPlanningId
+                WHERE
+                    CBP.date = '${strCurrDate}'
+                GROUP BY
+                    CBP.id,
+                    CBP.LineId
+            ),
+            CTE_PLAN_CURR_PASS AS (
+                SELECT
+                    CPC.id,
+                    CPC.LineId,
+                    CPP.qty AS qtyPass,
+                    CPC.qty AS qtyCurr
+                FROM
+                    CTE_PLAN_PASS AS CPP
+                    RIGHT JOIN CTE_PLAN_CURR AS CPC ON CPP.id = CPC.id
+            ),
+            CTE_ORDER_CURR AS (
                 SELECT 
-                    cbp.LineId, SUM(cbpd.qty) as totalQty 
+                    LineId,
+                    COUNT(LineId) AS qty
                 FROM 
-                    controlboardplannings as cbp 
-                JOIN 
-                    (
-                        SELECT * FROM controlboardplanningdetails 
-                        WHERE controlboardplanningdetails.time BETWEEN '${startTime}' AND '${endTime}' 
-                        ORDER BY ControlBoardPlanningId,sequence ASC 
-                    ) as cbpd ON cbp.id = cbpd.ControlBoardPlanningId
-                WHERE 
-                    cbp.date = '${date}' 
-                GROUP BY 
-                    cbp.LineId
-            ) as cbpd`;
-
-		const orderCompleteSubQuery = `(
-                SELECT * FROM ordercompletes WHERE createdAt >= '${startDate}'
-                UNION
-                SELECT * FROM ordercompletenodes WHERE createdAt >= '${startDate}'
-                UNION
-                SELECT * FROM ordercompletecables WHERE createdAt >= '${date}'
-            ) as oca`;
-
-		const orderCompleteQuery = `SELECT
-                l.id,
-                l.name as lineName,
-                IF(cbpd.totalQty IS NULL,0,cbpd.totalQty) as totalPlanningQty,
-                IF(oca.LineId IS NULL, 0, COUNT(*)) as totalOrderComplete
-            FROM 
-                ${orderCompleteSubQuery}
-            RIGHT JOIN
-                v_active_line as l on oca.LineId = l.id
-            LEFT JOIN
-                ${controlBoardPlanningSubQuery} ON l.id = cbpd.LineId
-            GROUP BY
-                l.id, 
-                l.name,
-                cbpd.totalQty
-            ORDER BY
-                l.name
-            ASC;`;
+                (
+                    SELECT * FROM ordercompletes WHERE createdAt >= '${startDate}'
+                    UNION
+                    SELECT * FROM ordercompletenodes WHERE createdAt >= '${startDate}'
+                    UNION
+                    SELECT * FROM ordercompletecables WHERE createdAt >= '${startDate}'
+                ) AS T_CURR_ORDER
+                GROUP BY
+                    LineId
+            ),
+            CTE_ORDER_PASS AS (
+                SELECT 
+                    LineId,
+                    COUNT(LineId) AS qty
+                FROM 
+                (
+                    SELECT * FROM ordercompletes WHERE createdAt >= '${startDate}' AND createdAt <= '${endDate}'
+                    UNION
+                    SELECT * FROM ordercompletenodes WHERE createdAt >= '${startDate}' AND createdAt <= '${endDate}'
+                    UNION
+                    SELECT * FROM ordercompletecables WHERE createdAt >= '${startDate}' AND createdAt <= '${endDate}'
+                ) AS T_PASS_ORDER
+                GROUP BY
+                    LineId
+            )
+        SELECT
+            l.name as lineName,
+            CPCP.qtyCurr as plantCurrQty,
+            CPCP.qtyPass as plantPassQty,
+            COC.qty as currentQty,
+            COP.qty as passQty
+        FROM
+            v_active_line AS L
+        LEFT JOIN
+            CTE_PLAN_CURR_PASS  AS CPCP ON L.id = CPCP.LineId
+        LEFT JOIN
+            CTE_ORDER_CURR AS COC ON L.id = COC.LineId
+        LEFT JOIN
+            CTE_ORDER_PASS AS COP ON L.id = COP.LineId
+        ORDER BY 
+            l.abbreviation,
+            l.sequence`;
 
 		const orderCompletes = await connectionDatabase.query(
 			orderCompleteQuery,
 			{
 				type: QueryTypes.SELECT,
+				logging: console.log,
 			},
 		);
 
