@@ -3,20 +3,29 @@ import { QueryTypes } from "sequelize";
 
 import connectionDatabase from "../configs/database.js";
 import { errorLogging } from "../helpers/error.js";
+import { getShiftTime, getTimeRange } from "../helpers/shift.js";
+import {
+	getCurrentQtyByLineId,
+	getLineShiftType,
+	getPlanningQtyByLineId,
+	getPreviousHourQtyByLineId,
+	getPreviousPlanningByLineId,
+} from "../services/dashboard.js";
 
 export const getDataFromAllLines = async (req, res) => {
 	try {
 		const { date } = req.params;
-
+		console.log(date);
 		const currentDate = new Date();
 		const startTime = "06:30:00";
 		const endTime = format(
 			addHours(startOfHour(currentDate), -1),
 			"HH:mm:ss",
 		);
+
 		const strCurrDate = format(currentDate, "yyyy-MM-dd");
-		const startDate = `${date} ${startTime}`;
-		const endDate = `${date} ${format(startOfHour(currentDate), "HH:mm:ss")}`;
+		const startDate = `${strCurrDate} ${startTime}`;
+		const endDate = `${strCurrDate} ${format(startOfHour(currentDate), "HH:mm:ss")}`;
 
 		const orderCompleteQuery = `
         WITH
@@ -118,6 +127,68 @@ export const getDataFromAllLines = async (req, res) => {
 		return res.status(200).json({
 			message: "Success Fetch Control Board!",
 			data: orderCompletes,
+		});
+	} catch (err) {
+		errorLogging(err.toString());
+		return res.status(500).json({
+			isExpressValidation: false,
+			data: {
+				title: "Something Wrong!",
+				message: err.toString(),
+			},
+		});
+	}
+};
+
+export const getDataFromAllLinesV2 = async (req, res) => {
+	try {
+		const { date } = req.params;
+		console.log(date);
+		const lineShifts = await getLineShiftType();
+		const data = [];
+		for (const lineShift of lineShifts) {
+			const lineId = lineShift.lineId;
+			const lineName = lineShift.name;
+			const shiftType = lineShift.shift;
+
+			if (!shiftType) {
+				data.push({
+					lineName,
+					currentQty: null,
+					passQty: null,
+					plantCurrQty: null,
+					plantPassQty: null,
+				});
+				continue;
+			}
+
+			const timeRange = getShiftTime(shiftType);
+			const sequenceRange = getTimeRange(shiftType);
+
+			const dailyPlanning = await getPlanningQtyByLineId(lineId);
+			const currentQty = await getCurrentQtyByLineId(lineId);
+			const prevQty = await getPreviousHourQtyByLineId(
+				lineId,
+				timeRange.previousOrder,
+			);
+			const planPassQty = await getPreviousPlanningByLineId(
+				lineId,
+				sequenceRange,
+				shiftType,
+			);
+
+			data.push({
+				lineName,
+				currentQty: currentQty,
+				passQty: prevQty,
+				plantCurrQty: dailyPlanning,
+				plantPassQty: planPassQty,
+			});
+		}
+
+		return res.status(200).json({
+			message: "Success Fetch Control Board!",
+			data: data,
 		});
 	} catch (err) {
 		errorLogging(err.toString());
